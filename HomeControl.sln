@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28714.193
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Web", "src\HomeControl.Web\HomeControl.Web.csproj", "{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7D397F0-2587-4B14-97C6-DC6378E2EE4D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.StreamDeck", "src\HomeControl.StreamDeck\HomeControl.StreamDeck.csproj", "{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|x64.Build.0 = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Debug|x86.Build.0 = Debug|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|x64.ActiveCfg = Release|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|x64.Build.0 = Release|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{995219D6-B5EB-4CD3-A4D6-A02600E9D4BF}.Release|x86.Build.0 = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|x64.Build.0 = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC15BB62-9226-44A8-9A54-82B2C31EA6E2}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {76B53920-53E2-4388-9387-AAABB14ACCB2}
+	EndGlobalSection
+EndGlobal
