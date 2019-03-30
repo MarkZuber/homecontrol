@@ -7,20 +7,53 @@ var BuildConfiguration = "Release";
 var RemoteServerAddress = "192.168.2.203";
 var RemoteServerSshAddress = $"pi@{RemoteServerAddress}";
 
-var StreamDeckControllerLocalPath = "./src/HomeControl.StreamDeck";
-var StreamDeckControllerCsProjLocalPath = $"{StreamDeckControllerLocalPath}/HomeControl.StreamDeck.csproj";
-var StreamDeckControllerLinuxArmReleasePath = $"{StreamDeckControllerLocalPath}/bin/Release/netcoreapp3.0/linux-arm";
-var StreamDeckControllerRemoteStagingPath = $"{RemoteServerSshAddress}:/home/pi/streamdeck_staging";
+
+public class StreamDeckData
+{
+    public StreamDeckData(string removeServerSshAddress)
+    {
+        RemoteServerSshAddress = removeServerSshAddress;
+    }
+
+    public string RemoteServerSshAddress { get; }
+
+    public string LocalPath => "./src/HomeControl.StreamDeck";
+    public string CsProjLocalPath => $"{LocalPath}/HomeControl.StreamDeck.csproj";
+    public string LinuxArmReleasePath => $"{LocalPath}/bin/Release/netcoreapp3.0/linux-arm";
+    public string RemoteStagingPath => $"{RemoteServerSshAddress}:/home/pi/streamdeck_staging";
+}
+
+Setup<StreamDeckData>(setupContext=> {
+    return new StreamDeckData(RemoteServerSshAddress);
+});
 
 var HomeControlWebLocalPath = "./src/HomeControl.Web";
 var HomeControlWebDockerfile = $"{HomeControlWebLocalPath}/Dockerfile";
 
 
+public void RunWslCommand(string command)
+{
+    StartProcess("wsl.exe", new ProcessSettings
+    {
+        Arguments = command
+    });
+}
+
+public void RunRemoteCommand(string command)
+{
+    if (!command.StartsWith("'"))
+    {
+        command = $"'{command}'";
+    }
+    RunWslCommand($"ssh {RemoteServerSshAddress} {command}");
+}
+
+
 Task("DeployStreamDeckController")
-    .Does(() => {
+    .Does<StreamDeckData>((streamDeckData) => {
         // Build and publish the bits for linux-arm architecture
         DotNetCorePublish(
-            StreamDeckControllerCsProjLocalPath,
+            streamDeckData.CsProjLocalPath,
             new DotNetCorePublishSettings
             {
                 Configuration = BuildConfiguration,
@@ -28,25 +61,22 @@ Task("DeployStreamDeckController")
             });
 
         // rsync the bits over to the staging path on the pi
-        StartProcess("wsl.exe", new ProcessSettings
-        {
-            Arguments = $"rsync -rvzh {StreamDeckControllerLinuxArmReleasePath}/* {StreamDeckControllerRemoteStagingPath}"
-        });
+        RunWslCommand($"rsync -rvzh {streamDeckData.LinuxArmReleasePath}/* {streamDeckData.RemoteStagingPath}");
 
         // Ensure user / environment/paths are setup on the pi for the systemd execution
-        StartProcess("wsl.exe", new ProcessSettings
-        {
-            Arguments = $"ssh {RemoteServerSshAddress} 'bash -s' < scripts/configure_streamdeck_systemd.sh"
-        });
+        RunRemoteCommand($"'bash -s' < scripts/configure_streamdeck_systemd.sh");
     });
 
 Task("DeployHomeControlWeb")
     .Does(() => {
+
+        string dockerImageName = "homecontrolweb:dev";
+
         DockerBuild(
             new DockerImageBuildSettings
             {
                 File = HomeControlWebDockerfile,
-                Tag = new string[] { "homecontrol/latest" }
+                Tag = new string[] { dockerImageName }
             },
             ".");
 
@@ -60,6 +90,8 @@ Task("DeployHomeControlWeb")
 
         // docker save <image> | bzip2 | pv | \
         //     ssh user@host 'bunzip2 | docker load'
+        RunWslCommand($"docker save {dockerImageName} | bzip2 | pv | ssh {RemoteServerSshAddress} 'bunzip2 | docker load'");
+        RunRemoteCommand($"docker run {dockerImageName}");
     });
 
 Task("DeployAll")
