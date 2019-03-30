@@ -10,7 +10,7 @@ var RemoteServerSshAddress = $"pi@{RemoteServerAddress}";
 var StreamDeckControllerLocalPath = "./src/HomeControl.StreamDeck";
 var StreamDeckControllerCsProjLocalPath = $"{StreamDeckControllerLocalPath}/HomeControl.StreamDeck.csproj";
 var StreamDeckControllerLinuxArmReleasePath = $"{StreamDeckControllerLocalPath}/bin/Release/netcoreapp3.0/linux-arm";
-var StreamDeckControllerRemotePath = $"{RemoteServerSshAddress}:/home/pi/streamdeckcon";
+var StreamDeckControllerRemoteStagingPath = $"{RemoteServerSshAddress}:/home/pi/streamdeck_staging";
 
 var HomeControlWebLocalPath = "./src/HomeControl.Web";
 var HomeControlWebDockerfile = $"{HomeControlWebLocalPath}/Dockerfile";
@@ -18,18 +18,27 @@ var HomeControlWebDockerfile = $"{HomeControlWebLocalPath}/Dockerfile";
 
 Task("DeployStreamDeckController")
     .Does(() => {
-    DotNetCorePublish(
-        StreamDeckControllerCsProjLocalPath,
-        new DotNetCorePublishSettings
+        // Build and publish the bits for linux-arm architecture
+        DotNetCorePublish(
+            StreamDeckControllerCsProjLocalPath,
+            new DotNetCorePublishSettings
+            {
+                Configuration = BuildConfiguration,
+                Runtime = "linux-arm"
+            });
+
+        // rsync the bits over to the staging path on the pi
+        StartProcess("wsl.exe", new ProcessSettings
         {
-            Configuration = BuildConfiguration,
-            Runtime = "linux-arm"
+            Arguments = $"rsync -rvzh {StreamDeckControllerLinuxArmReleasePath}/* {StreamDeckControllerRemoteStagingPath}"
         });
-    StartProcess("wsl.exe", new ProcessSettings
-    {
-        Arguments = $"rsync -rvzh {StreamDeckControllerLinuxArmReleasePath}/* {StreamDeckControllerRemotePath}"
+
+        // Ensure user / environment/paths are setup on the pi for the systemd execution
+        StartProcess("wsl.exe", new ProcessSettings
+        {
+            Arguments = $"ssh {RemoteServerSshAddress} 'bash -s' < scripts/configure_streamdeck_systemd.sh"
+        });
     });
-});
 
 Task("DeployHomeControlWeb")
     .Does(() => {

@@ -1,0 +1,14 @@
+﻿[Unit]
+Description=StreamDeck HomeControl Controller
+DefaultDependencies=no
+
+[Service]
+Type=simple
+RemainAfterExit=no
+ExecStart=/var/streamdecksvc/HomeControl.StreamDeck
+WorkingDirectory=/var/streamdecksvc
+User=streamdeckuser
+Group=streamdeckuser
+
+
+[install]
