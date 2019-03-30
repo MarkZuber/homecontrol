@@ -23,6 +23,12 @@ namespace HomeControl.StreamDeck
             _logger = logger;
             _config = config;
             _streamDeckController = StreamDeckFactory.CreateDeck();
+            _streamDeckController.KeyPressed += OnStreamDeckKeyPressed;
+        }
+
+        private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
+        {
+            _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex} -> {e.KeyOn}");
         }
 
         private void DoWork(object state)
@@ -32,6 +38,8 @@ namespace HomeControl.StreamDeck
                 var bytes = new byte[3];
                 _random.NextBytes(bytes);
                 _streamDeckController.FillColor(i, bytes[0], bytes[1], bytes[2]);
+
+
             }
         }
 
@@ -57,6 +65,7 @@ namespace HomeControl.StreamDeck
         {
             _logger.LogInformation("Disposing....");
             _timer?.Dispose();
+            _streamDeckController.KeyPressed += OnStreamDeckKeyPressed;
             _streamDeckController.Dispose();
         }
     }
