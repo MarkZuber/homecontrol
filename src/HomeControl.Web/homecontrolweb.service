@@ -1,0 +1,24 @@
+﻿[Unit]
+Description=HomeControl Web Service
+DefaultDependencies=no
+Wants=network.target # network is required
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10   # Restart service after 10 seconds if dotnet service crashes
+SyslogIdentifier=homecontrolwebsvc
+ExecStart=/var/homecontrolwebsvc/HomeControl.web
+WorkingDirectory=/var/homecontrolwebsvc
+User=homecontroluser
+Group=homecontroluser
+PrivateTmp=true
+# specify environment variable for environment
+Environment=ASPNETCORE_ENVIRONMENT=Production
+# specify environement variable for listening port
+Environment=ASPNETCORE_URLS=http://*:8080 
+
+
+[Install]
+WantedBy = multi-user.target

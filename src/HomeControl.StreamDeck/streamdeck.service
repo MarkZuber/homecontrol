@@ -11,4 +11,4 @@ User=streamdeckuser
 Group=streamdeckuser
 
 
-[install]
+[Install]
