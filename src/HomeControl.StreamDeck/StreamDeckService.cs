@@ -34,6 +34,20 @@ namespace HomeControl.StreamDeck
             _streamDeckController.KeyPressed += OnStreamDeckKeyPressed;
         }
 
+        private void UpdateKeyImage(int keyIndex, bool isKeyPressed)
+        {
+            // Add NumKeys so that the service will get the "pressed" button image instead
+            int offsetToAdd = isKeyPressed ? _streamDeckController.NumKeys : 0;
+            if (_keyImageCache.TryGetValue(keyIndex + offsetToAdd, out byte[] cachedImageBytes))
+            {
+                UpdateImageFromBytes(keyIndex, cachedImageBytes);
+            }
+            else
+            {
+                RefreshImagesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+        }
+
         private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
         {
             // todo: update the service so we can get "normal" and "pressed" button states
@@ -42,19 +56,10 @@ namespace HomeControl.StreamDeck
             {
                 _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex}");
                 _streamDeckApi.PressKey(e.KeyIndex);
-                _streamDeckController.FillColor(e.KeyIndex, 0, 0, 0);
+
             }
-            else
-            {
-                if (_keyImageCache.TryGetValue(e.KeyIndex, out byte[] cachedImageBytes))
-                {
-                    UpdateImageFromBytes(e.KeyIndex, cachedImageBytes);
-                }
-                else
-                {
-                    RefreshImagesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                }
-            }
+
+            UpdateKeyImage(e.KeyIndex, e.KeyOn);
         }
 
         public void Dispose()
@@ -81,6 +86,10 @@ namespace HomeControl.StreamDeck
                 var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex);
                 _keyImageCache[keyIndex] = imageBytes;
                 UpdateImageFromBytes(keyIndex, imageBytes);
+
+                // Also update the keypressed image...
+                imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys);
+                _keyImageCache[keyIndex + _streamDeckController.NumKeys] = imageBytes;
             }
             catch (StreamDeckException ex)
             {

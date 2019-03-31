@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using HomeControl.Web.Activities;
+using HomeControl.Web.Devices;
+using HomeControl.Web.Devices.Denon;
+using HomeControl.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +40,7 @@ namespace HomeControl.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            #region SWAGGER
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -61,6 +67,43 @@ namespace HomeControl.Web
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            #endregion SWAGGER
+
+            // Register Devices
+            services.AddSingleton<IDenonNetworkReceiver, DenonNetworkReceiver>();
+
+            // Register Activities
+            services.AddSingleton<TheaterOffActivity>();
+            services.AddSingleton<TheaterOnActivity>();
+            services.AddSingleton<IActivityFactory, ActivityFactory>();
+
+            // Configuration
+            var streamDeckActivityServiceConfig = new StreamDeckActivityServiceConfig(
+                new ConcurrentDictionary<int, StreamDeckKeyInfo>(new Dictionary<int, StreamDeckKeyInfo>
+                {
+                    {  0, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "hellothere.png", "hellothere.png") },
+                    {  2, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    {  3, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "smiles.png") },
+                    {  4, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    {  5, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
+                    {  6, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
+                    {  7, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    {  8, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    {  9, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "hellothere.png") },
+                    { 10, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    { 11, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
+                    { 12, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
+                    { 13, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "smiles.png") },
+                    { 14, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
+                }));
+
+            // todo: there are better ways to register config...
+            services.AddSingleton<StreamDeckActivityServiceConfig>(streamDeckActivityServiceConfig);
+
+            // Register Services
+            services.AddSingleton<IActivityService, ActivityService>();
+            services.AddSingleton<IStreamDeckActivityService, StreamDeckActivityService>();
 
             services
                 .AddMvc()
