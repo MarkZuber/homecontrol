@@ -19,8 +19,8 @@ namespace HomeControl.StreamDeck
         private readonly ILogger _logger;
         private readonly IOptions<StreamDeckConfig> _config;
         private readonly IStreamDeckController _streamDeckController;
-        private readonly Random _random = new Random();
         private readonly IStreamDeckApi _streamDeckApi;
+        private readonly ConcurrentDictionary<int, byte[]> _keyImageCache = new ConcurrentDictionary<int, byte[]>();
 
         public StreamDeckService(
             ILogger<StreamDeckService> logger,
@@ -36,59 +36,75 @@ namespace HomeControl.StreamDeck
 
         private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
         {
+            // todo: update the service so we can get "normal" and "pressed" button states
+            // so we can toggle the button on push instead of just going blank.
             if (e.KeyOn)
             {
                 _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex}");
                 _streamDeckApi.PressKey(e.KeyIndex);
+                _streamDeckController.FillColor(e.KeyIndex, 0, 0, 0);
+            }
+            else
+            {
+                if (_keyImageCache.TryGetValue(e.KeyIndex, out byte[] cachedImageBytes))
+                {
+                    UpdateImageFromBytes(e.KeyIndex, cachedImageBytes);
+                }
+                else
+                {
+                    RefreshImagesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                }
             }
         }
 
         public void Dispose()
         {
             _logger.LogInformation("Disposing....");
-            _streamDeckController.KeyPressed += OnStreamDeckKeyPressed;
+            _streamDeckController.ClearAllKeys();
+            _streamDeckController.KeyPressed -= OnStreamDeckKeyPressed;
             _streamDeckController.Dispose();
         }
 
-        private async Task UpdateImageForKeyAsync(int keyIndex)
+        // todo: move this to the streamdeck hid control library.
+        private void UpdateImageFromBytes(int keyIndex, byte[] imageBytes)
         {
-            var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex);
             using (var ms = new MemoryStream(imageBytes))
             {
                 _streamDeckController.SetImage(keyIndex, ms);
             }
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        private async Task UpdateImageForKeyAsync(int keyIndex)
         {
-            //var bytes = new byte[3];
-            //_random.NextBytes(bytes);
-            //_streamDeckController.FillColor(i, bytes[0], bytes[1], bytes[2]);
-
-            _streamDeckController.FillAllKeysWithColor(0, 255, 0);
-
             try
             {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    var tasks = new List<Task>();
-                    for (int i = 0; i < _streamDeckController.NumKeys; i++)
-                    {
-                        tasks.Add(UpdateImageForKeyAsync(i));
-                    }
+                var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex);
+                _keyImageCache[keyIndex] = imageBytes;
+                UpdateImageFromBytes(keyIndex, imageBytes);
+            }
+            catch (StreamDeckException ex)
+            {
+                _logger.LogError(ex, $"SetImage ({keyIndex}) failed");
+            }
+        }
 
-                    await Task.WhenAll(tasks.ToArray());
-                }
-            }
-            catch (Exception ex)
+        private async Task RefreshImagesAsync()
+        {
+            _streamDeckController.ClearAllKeys();
+
+            var tasks = new List<Task>();
+            for (int i = 0; i < _streamDeckController.NumKeys; i++)
             {
-                _logger.LogError(ex, "Failure calling GetImageForKey");
-                throw;
+                tasks.Add(UpdateImageForKeyAsync(i));
             }
-            finally
-            {
-                _streamDeckController.ClearAllKeys();
-            }
+
+            await Task.WhenAll(tasks.ToArray());
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        {
+            _streamDeckController.FillAllKeysWithColor(0, 255, 0);
+            await RefreshImagesAsync();
         }
     }
 }
