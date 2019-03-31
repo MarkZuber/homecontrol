@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HomeControl.StreamDeck.Api;
+using HomeControl.StreamDeck.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +29,7 @@ namespace HomeControl.StreamDeck
                     services.Configure<StreamDeckConfig>(hostContext.Configuration.GetSection("StreamDeck"));
 
                     services.AddSingleton<IHostedService, StreamDeckService>();
+                    services.AddSingleton<IStreamDeckApi>(new StreamDeckApi("http://192.168.2.203:8080"));
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {

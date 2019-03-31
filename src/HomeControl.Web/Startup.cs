@@ -81,6 +81,16 @@ namespace HomeControl.Web
 
             app.UseStaticFiles();
 
+            // When we deploy, we're not running in IIS Express so env.WebRootPath will be null.
+            // Need to set it based on the fact that wwwroot is under the publish directory as part of
+            // deployment.
+            if (string.IsNullOrWhiteSpace(env.WebRootPath))
+            {
+                env.WebRootPath = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "publish",
+                    "wwwroot");
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

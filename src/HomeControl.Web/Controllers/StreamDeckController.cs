@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeControl.Web.Controllers
 {
-    [Produces("application/json")]
     [Route("api/streamdeck")]
     [ApiController]
     public class StreamDeckController : Controller
@@ -23,6 +22,7 @@ namespace HomeControl.Web.Controllers
 
         [HttpGet("{keyIndex}", Name = "GetImageForKey")]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        [ProducesResponseType(200, Type = typeof(FileResult))]
         public IActionResult GetImageForKey(int keyIndex)
         {
             var filePaths = new List<string>
@@ -35,6 +35,13 @@ namespace HomeControl.Web.Controllers
             string filePath = chance < 0.5 ? filePaths[0] : filePaths[1];
 
             return PhysicalFile(filePath, "image/png");
+        }
+
+        [HttpPost("{keyIndex}", Name = "PressKey")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public IActionResult PressKey(int keyIndex)
+        {
+            return Ok();
         }
     }
 }
