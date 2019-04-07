@@ -115,7 +115,7 @@ namespace HomeControl.StreamDeck
                 imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys);
                 _keyImageCache[keyIndex + _streamDeckController.NumKeys] = imageBytes;
             }
-            catch (StreamDeckException ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"SetImage ({keyIndex}) failed");
             }
