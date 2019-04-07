@@ -21,9 +21,8 @@ namespace HomeControl.Web.Activities
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theaterReceiver.TurnOffAsync().ConfigureAwait(false);
-
-            // todo: turn off projector
+            await _theaterReceiver.TurnOnAsync().ConfigureAwait(false);
+            await _theaterReceiver.SelectXboxInputAsync().ConfigureAwait(false);
         }
     }
 }

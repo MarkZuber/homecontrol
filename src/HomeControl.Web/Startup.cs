@@ -70,32 +70,43 @@ namespace HomeControl.Web
             #endregion SWAGGER
 
             // Register Devices
+
+            // todo: wire this up to json config...
+            services.AddSingleton<IDenonHttpReceiverDevice>(new DenonHttpReceiverDevice("192.168.2.198"));
             services.AddSingleton<IDenonNetworkReceiver, DenonNetworkReceiver>();
 
             // Register Activities
             services.AddSingleton<TheaterOffActivity>();
             services.AddSingleton<TheaterOnActivity>();
+            services.AddSingleton<TheaterAppleTvActivity>();
+            services.AddSingleton<TheaterFireTvActivity>();
+            services.AddSingleton<TheaterPs4Activity>();
+            services.AddSingleton<TheaterToggleMuteActivity>();
+            services.AddSingleton<TheaterVolumeDownActivity>();
+            services.AddSingleton<TheaterVolumeUpActivity>();
+            services.AddSingleton<TheaterXboxActivity>();
+            services.AddSingleton<TheaterNullActivity>();
             services.AddSingleton<IActivityFactory, ActivityFactory>();
 
             // Configuration
             var streamDeckActivityServiceConfig = new StreamDeckActivityServiceConfig(
                 new ConcurrentDictionary<int, StreamDeckKeyInfo>(new Dictionary<int, StreamDeckKeyInfo>
                 {
-                    {  0, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "xbox.png", "xbox.png") },
-                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "ps4.png", "ps4.png") },
-                    {  2, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "firetv.png", "firetv.png") },
-                    {  3, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "appletv.png", "appletv.png") },
-                    {  4, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "volmute.png", "volmute.png") },
-                    {  5, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
-                    {  6, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
-                    {  7, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
-                    {  8, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
-                    {  9, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "volup.png", "volup.png") },
-                    { 10, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "poweroff.png", "poweroff.png") },
+                    {  0, new StreamDeckKeyInfo(ActivityKey.TheaterXboxOn,  "xbox.png", "xbox.png") },
+                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterPs4On, "ps4.png", "ps4.png") },
+                    {  2, new StreamDeckKeyInfo(ActivityKey.TheaterFireTvOn,  "firetv.png", "firetv.png") },
+                    {  3, new StreamDeckKeyInfo(ActivityKey.TheaterAppleTvOn,  "appletv.png", "appletv.png") },
+                    {  4, new StreamDeckKeyInfo(ActivityKey.TheaterVolumeToggleMute, "volmute.png", "volmute.png") },
+                    {  5, new StreamDeckKeyInfo(ActivityKey.None,  "blank.png", "blank.png") },
+                    {  6, new StreamDeckKeyInfo(ActivityKey.None,  "blank.png", "blank.png") },
+                    {  7, new StreamDeckKeyInfo(ActivityKey.None,  "blank.png", "blank.png") },
+                    {  8, new StreamDeckKeyInfo(ActivityKey.None,  "blank.png", "blank.png") },
+                    {  9, new StreamDeckKeyInfo(ActivityKey.TheaterVolumeUp,  "volup.png", "volup.png") },
+                    { 10, new StreamDeckKeyInfo(ActivityKey.TheaterOff,  "poweroff.png", "poweroff.png") },
                     { 11, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "dim.png", "dim.png") },
                     { 12, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "bright.png", "bright.png") },
-                    { 13, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
-                    { 14, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "voldown.png", "voldown.png") },
+                    { 13, new StreamDeckKeyInfo(ActivityKey.None,  "blank.png", "blank.png") },
+                    { 14, new StreamDeckKeyInfo(ActivityKey.TheaterVolumeDown,  "voldown.png", "voldown.png") },
                 }));
 
             // todo: there are better ways to register config...

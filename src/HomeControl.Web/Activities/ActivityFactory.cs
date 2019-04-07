@@ -15,6 +15,13 @@ namespace HomeControl.Web.Activities
         {
             { ActivityKey.TheaterOff, typeof(TheaterOffActivity) },
             { ActivityKey.TheaterOn, typeof(TheaterOnActivity) },
+            { ActivityKey.TheaterXboxOn, typeof(TheaterXboxActivity) },
+            { ActivityKey.TheaterPs4On, typeof(TheaterPs4Activity) },
+            { ActivityKey.TheaterFireTvOn, typeof(TheaterFireTvActivity) },
+            { ActivityKey.TheaterAppleTvOn, typeof(TheaterAppleTvActivity) },
+            { ActivityKey.TheaterVolumeUp, typeof(TheaterVolumeUpActivity) },
+            { ActivityKey.TheaterVolumeDown, typeof(TheaterVolumeDownActivity) },
+            { ActivityKey.TheaterVolumeToggleMute, typeof(TheaterToggleMuteActivity) },
         };
 
         public ActivityFactory(IServiceProvider serviceProvider)
@@ -24,9 +31,7 @@ namespace HomeControl.Web.Activities
 
         public IActivity GetActivity(string activityKey)
         {
-
-
-            return _serviceProvider.GetService<TheaterOffActivity>();
+            return (IActivity)_serviceProvider.GetService(s_activityTypes[activityKey]);
         }
     }
 }

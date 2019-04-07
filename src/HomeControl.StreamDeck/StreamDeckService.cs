@@ -21,6 +21,7 @@ namespace HomeControl.StreamDeck
         private readonly IStreamDeckController _streamDeckController;
         private readonly IStreamDeckApi _streamDeckApi;
         private readonly ConcurrentDictionary<int, byte[]> _keyImageCache = new ConcurrentDictionary<int, byte[]>();
+        private readonly object _lockObj = new object();
 
         public StreamDeckService(
             ILogger<StreamDeckService> logger,
@@ -50,16 +51,39 @@ namespace HomeControl.StreamDeck
 
         private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
         {
-            // todo: update the service so we can get "normal" and "pressed" button states
-            // so we can toggle the button on push instead of just going blank.
-            if (e.KeyOn)
+            lock (_lockObj)
             {
-                _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex}");
-                _streamDeckApi.PressKey(e.KeyIndex);
+                // todo: update the service so we can get "normal" and "pressed" button states
+                // so we can toggle the button on push instead of just going blank.
+                if (e.KeyOn)
+                {
+                    _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex}");
 
+                    try
+                    {
+
+                        // todo: get "local" operations we can run from server side button config...
+                        switch (e.KeyIndex)
+                        {
+                        case 11:
+                            _streamDeckController.SetBrightness(5);
+                            break;
+                        case 12:
+                            _streamDeckController.SetBrightness(75);
+                            break;
+                        default:
+                            _streamDeckApi.PressKey(e.KeyIndex);
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"StreamDeck Key Press failed");
+                    }
+                }
+
+                UpdateKeyImage(e.KeyIndex, e.KeyOn);
             }
-
-            UpdateKeyImage(e.KeyIndex, e.KeyOn);
         }
 
         public void Dispose()
