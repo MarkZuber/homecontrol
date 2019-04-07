@@ -81,21 +81,21 @@ namespace HomeControl.Web
             var streamDeckActivityServiceConfig = new StreamDeckActivityServiceConfig(
                 new ConcurrentDictionary<int, StreamDeckKeyInfo>(new Dictionary<int, StreamDeckKeyInfo>
                 {
-                    {  0, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "hellothere.png", "hellothere.png") },
-                    {  2, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    {  3, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "smiles.png") },
-                    {  4, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    {  5, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
-                    {  6, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
-                    {  7, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    {  8, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    {  9, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "hellothere.png") },
-                    { 10, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    { 11, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "smiles.png") },
-                    { 12, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
-                    { 13, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "hellothere.png", "smiles.png") },
-                    { 14, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "smiles.png", "hellothere.png") },
+                    {  0, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "xbox.png", "xbox.png") },
+                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "ps4.png", "ps4.png") },
+                    {  2, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "firetv.png", "firetv.png") },
+                    {  3, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "appletv.png", "appletv.png") },
+                    {  4, new StreamDeckKeyInfo(ActivityKey.TheaterOff, "volmute.png", "volmute.png") },
+                    {  5, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
+                    {  6, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
+                    {  7, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
+                    {  8, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
+                    {  9, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "volup.png", "volup.png") },
+                    { 10, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "poweroff.png", "poweroff.png") },
+                    { 11, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "dim.png", "dim.png") },
+                    { 12, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "bright.png", "bright.png") },
+                    { 13, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "blank.png", "smiles.png") },
+                    { 14, new StreamDeckKeyInfo(ActivityKey.TheaterOn,  "voldown.png", "voldown.png") },
                 }));
 
             // todo: there are better ways to register config...
