@@ -10,19 +10,20 @@ namespace HomeControl.Web.Activities
 {
     public class TheaterFireTvActivity : IActivity
     {
-        private readonly IDenonNetworkReceiver _theaterReceiver;
+        private readonly ITheater _theater;
 
-        public TheaterFireTvActivity(IDenonNetworkReceiver theaterReceiver)
+        public TheaterFireTvActivity(ITheater theater)
         {
-            _theaterReceiver = theaterReceiver;
+            _theater = theater;
         }
 
         public string Key => ActivityKey.TheaterOn;
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theaterReceiver.TurnOnAsync().ConfigureAwait(false);
-            await _theaterReceiver.SelectFireTvInputAsync().ConfigureAwait(false);
+            await _theater.Projector.TurnOnAsync().ConfigureAwait(false);
+            await _theater.Receiver.TurnOnAsync().ConfigureAwait(false);
+            await _theater.Receiver.SelectFireTvInputAsync().ConfigureAwait(false);
         }
     }
 }

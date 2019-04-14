@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using HomeControl.Web.Activities;
 using HomeControl.Web.Devices;
 using HomeControl.Web.Devices.Denon;
+using HomeControl.Web.Devices.Meta;
+using HomeControl.Web.Devices.Sony;
 using HomeControl.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +76,9 @@ namespace HomeControl.Web
             // todo: wire this up to json config...
             services.AddSingleton<IDenonHttpReceiverDevice>(new DenonHttpReceiverDevice("192.168.2.198"));
             services.AddSingleton<IDenonNetworkReceiver, DenonNetworkReceiver>();
+            services.AddSingleton<ISonyNetworkProjector>(new SonyNetworkProjector("192.168.2.22"));
+
+            services.AddSingleton<ITheater, Theater>();
 
             // Register Activities
             services.AddSingleton<TheaterOffActivity>();

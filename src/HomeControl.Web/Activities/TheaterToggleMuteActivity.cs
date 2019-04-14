@@ -10,18 +10,18 @@ namespace HomeControl.Web.Activities
 {
     public class TheaterToggleMuteActivity : IActivity
     {
-        private readonly IDenonNetworkReceiver _theaterReceiver;
+        private readonly ITheater _theater;
 
-        public TheaterToggleMuteActivity(IDenonNetworkReceiver theaterReceiver)
+        public TheaterToggleMuteActivity(ITheater theater)
         {
-            _theaterReceiver = theaterReceiver;
+            _theater = theater;
         }
 
         public string Key => ActivityKey.TheaterOn;
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theaterReceiver.ToggleMuteAsync().ConfigureAwait(false);
+            await _theater.Receiver.ToggleMuteAsync().ConfigureAwait(false);
         }
     }
 }

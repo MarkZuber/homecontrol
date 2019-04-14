@@ -10,18 +10,18 @@ namespace HomeControl.Web.Activities
 {
     public class TheaterVolumeUpActivity : IActivity
     {
-        private readonly IDenonNetworkReceiver _theaterReceiver;
+        private readonly ITheater _theater;
 
-        public TheaterVolumeUpActivity(IDenonNetworkReceiver theaterReceiver)
+        public TheaterVolumeUpActivity(ITheater theater)
         {
-            _theaterReceiver = theaterReceiver;
+            _theater = theater;
         }
 
         public string Key => ActivityKey.TheaterOn;
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theaterReceiver.VolumeUpAsync().ConfigureAwait(false);
+            await _theater.Receiver.VolumeUpAsync().ConfigureAwait(false);
         }
     }
 }

@@ -10,20 +10,19 @@ namespace HomeControl.Web.Activities
 {
     public class TheaterOffActivity : IActivity
     {
-        private readonly IDenonNetworkReceiver _theaterReceiver;
+        private readonly ITheater _theater;
 
-        public TheaterOffActivity(IDenonNetworkReceiver theaterReceiver)
+        public TheaterOffActivity(ITheater theater)
         {
-            _theaterReceiver = theaterReceiver;
+            _theater = theater;
         }
 
         public string Key => ActivityKey.TheaterOn;
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theaterReceiver.TurnOffAsync().ConfigureAwait(false);
-
-            // todo: turn off projector
+            await _theater.Projector.TurnOffAsync().ConfigureAwait(false);
+            await _theater.Receiver.TurnOffAsync().ConfigureAwait(false);
         }
     }
 }
