@@ -26,6 +26,7 @@ namespace HomeControl.Web.Services
                 IActivity activity;
                 while (!_activities.TryGetValue(activityKey, out activity))
                 {
+                    // GetActivity will throw ArgumentException if activityKey isn't found
                     _activities[activityKey] = _activityFactory.GetActivity(activityKey);
                 }
 
@@ -33,9 +34,18 @@ namespace HomeControl.Web.Services
             }
         }
 
-        public Task ExecuteActivityAsync(string activityKey, CancellationToken cancellationToken)
+        public async Task ExecuteActivityAsync(string activityKey, CancellationToken cancellationToken)
         {
-            return GetActivity(activityKey).ExecuteAsync(cancellationToken);
+            try
+            {
+                await GetActivity(activityKey).ExecuteAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (ArgumentException)
+            {
+            }
+            catch (AggregateException)
+            {
+            }
         }
     }
 }

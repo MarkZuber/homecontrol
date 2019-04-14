@@ -31,7 +31,11 @@ namespace HomeControl.Web.Activities
 
         public IActivity GetActivity(string activityKey)
         {
-            return (IActivity)_serviceProvider.GetService(s_activityTypes[activityKey]);
+            if (s_activityTypes.TryGetValue(activityKey, out var activityType))
+            {
+                return (IActivity)_serviceProvider.GetService(activityType);
+            }
+            throw new ArgumentException($"activityKey not found: {activityKey}", nameof(activityKey));
         }
     }
 }

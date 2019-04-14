@@ -17,8 +17,6 @@ namespace HomeControl.Web.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IStreamDeckActivityService _activityService;
 
-        private static readonly Random s_random = new Random();
-
         public StreamDeckController(IWebHostEnvironment webHostEnvironment, IStreamDeckActivityService activityService)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -37,18 +35,7 @@ namespace HomeControl.Web.Controllers
             int activityIdx = isNormalImage ? keyIndex : keyIndex - NumKeys;
             var keyInfo = _activityService.GetKeyInfoAtIndex(activityIdx);
             string fileName = isNormalImage ? keyInfo.NormalImageFileName : keyInfo.KeyPressedImageFileName;
-
             string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "keys", fileName);
-
-            //var filePaths = new List<string>
-            //{
-            //    Path.Combine(_webHostEnvironment.WebRootPath, "images", "keys", "smiles.png"),
-            //    Path.Combine(_webHostEnvironment.WebRootPath, "images", "keys", "hellothere.png"),
-            //};
-
-            //var chance = s_random.NextDouble();
-            //string filePath = chance < 0.5 ? filePaths[0] : filePaths[1];
-
             return PhysicalFile(filePath, "image/png");
         }
 

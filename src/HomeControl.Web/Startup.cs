@@ -2,24 +2,21 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using HomeControl.Web.Activities;
 using HomeControl.Web.Devices;
 using HomeControl.Web.Devices.Denon;
 using HomeControl.Web.Devices.Meta;
 using HomeControl.Web.Devices.Sony;
 using HomeControl.Web.Services;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace HomeControl.Web
 {
@@ -117,9 +114,28 @@ namespace HomeControl.Web
             // todo: there are better ways to register config...
             services.AddSingleton<StreamDeckActivityServiceConfig>(streamDeckActivityServiceConfig);
 
+            var alexaActivityServiceConfig = new AlexaActivityServiceConfig(
+                new ConcurrentDictionary<string, string>(new Dictionary<string, string>
+                {
+                    { AlexaMessage.TheaterXboxOn, ActivityKey.TheaterXboxOn },
+                    { AlexaMessage.TheaterPs4On, ActivityKey.TheaterPs4On },
+                    { AlexaMessage.TheaterFireTvOn, ActivityKey.TheaterFireTvOn },
+                    { AlexaMessage.TheaterAppleTvOn, ActivityKey.TheaterAppleTvOn },
+                    { AlexaMessage.TheaterVolumeMute, ActivityKey.TheaterVolumeToggleMute },
+                    { AlexaMessage.TheaterVolumeUp, ActivityKey.TheaterVolumeUp },
+                    { AlexaMessage.TheaterVolumeDown, ActivityKey.TheaterVolumeDown },
+                    { AlexaMessage.TheaterOn, ActivityKey.TheaterOn },
+                    { AlexaMessage.TheaterOff, ActivityKey.TheaterOff },
+                }));
+
+            services.AddSingleton<AlexaActivityServiceConfig>(alexaActivityServiceConfig);
+
             // Register Services
             services.AddSingleton<IActivityService, ActivityService>();
             services.AddSingleton<IStreamDeckActivityService, StreamDeckActivityService>();
+            services.AddSingleton<IAlexaActivityService, AlexaActivityService>();
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services
                 .AddMvc()
