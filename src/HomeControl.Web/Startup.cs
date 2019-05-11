@@ -173,13 +173,13 @@ namespace HomeControl.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "StreamDeck API");
             });
 
-            app.UseRouting(routes =>
-            {
-                routes.MapControllerRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRazorPages();
-            });
+            app.UseRouting()
+               .UseEndpoints(
+                endpoints =>
+                {
+                    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapRazorPages();
+                });
 
             app.UseCookiePolicy();
 
