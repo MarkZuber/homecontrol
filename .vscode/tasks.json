@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/HomeControl.Web/HomeControl.Web.csproj"
+                "${workspaceFolder}/HomeControl.sln"
             ],
             "problemMatcher": "$msCompile"
         }
