@@ -45,7 +45,7 @@ namespace HomeControl.Web.Controllers
         {
             // todo: make PressKey an async method.
             _activityService
-                .ExecuteActivityAtIndex(keyIndex, CancellationToken.None)
+                .ExecuteActivityAtIndexAsync(keyIndex, CancellationToken.None)
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();

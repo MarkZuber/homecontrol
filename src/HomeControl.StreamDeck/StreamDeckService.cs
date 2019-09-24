@@ -2,12 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HomeControl.StreamDeck.Api;
 using HomeControl.StreamDeck.Common;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Zube.StreamDeck;
@@ -21,7 +19,7 @@ namespace HomeControl.StreamDeck
         private readonly IStreamDeckController _streamDeckController;
         private readonly IStreamDeckApi _streamDeckApi;
         private readonly ConcurrentDictionary<int, byte[]> _keyImageCache = new ConcurrentDictionary<int, byte[]>();
-        private readonly object _lockObj = new object();
+        private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
 
         public StreamDeckService(
             ILogger<StreamDeckService> logger,
@@ -35,7 +33,7 @@ namespace HomeControl.StreamDeck
             _streamDeckController.KeyPressed += OnStreamDeckKeyPressed;
         }
 
-        private void UpdateKeyImage(int keyIndex, bool isKeyPressed)
+        private async Task UpdateKeyImageAsync(int keyIndex, bool isKeyPressed)
         {
             // Add NumKeys so that the service will get the "pressed" button image instead
             int offsetToAdd = isKeyPressed ? _streamDeckController.NumKeys : 0;
@@ -45,13 +43,14 @@ namespace HomeControl.StreamDeck
             }
             else
             {
-                RefreshImagesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                await RefreshImagesAsync().ConfigureAwait(false);
             }
         }
 
         private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
         {
-            lock (_lockObj)
+            bool locked = _semaphoreSlim.Wait(500);
+            try
             {
                 // todo: update the service so we can get "normal" and "pressed" button states
                 // so we can toggle the button on push instead of just going blank.
@@ -82,7 +81,14 @@ namespace HomeControl.StreamDeck
                     }
                 }
 
-                UpdateKeyImage(e.KeyIndex, e.KeyOn);
+                UpdateKeyImageAsync(e.KeyIndex, e.KeyOn).ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+            finally
+            {
+                if (locked)
+                {
+                    _semaphoreSlim.Release();
+                }
             }
         }
 
@@ -107,12 +113,12 @@ namespace HomeControl.StreamDeck
         {
             try
             {
-                var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex);
+                var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex).ConfigureAwait(false);
                 _keyImageCache[keyIndex] = imageBytes;
                 UpdateImageFromBytes(keyIndex, imageBytes);
 
                 // Also update the keypressed image...
-                imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys);
+                imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys).ConfigureAwait(false);
                 _keyImageCache[keyIndex + _streamDeckController.NumKeys] = imageBytes;
             }
             catch (Exception ex)
@@ -131,13 +137,13 @@ namespace HomeControl.StreamDeck
                 tasks.Add(UpdateImageForKeyAsync(i));
             }
 
-            await Task.WhenAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _streamDeckController.FillAllKeysWithColor(0, 255, 0);
-            await RefreshImagesAsync();
+            await RefreshImagesAsync().ConfigureAwait(false);
         }
     }
 }

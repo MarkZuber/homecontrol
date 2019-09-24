@@ -9,6 +9,6 @@ namespace HomeControl.Web.Services
     public interface IStreamDeckActivityService
     {
         StreamDeckKeyInfo GetKeyInfoAtIndex(int keyIndex);
-        Task ExecuteActivityAtIndex(int keyIndex, CancellationToken cancellationToken);
+        Task ExecuteActivityAtIndexAsync(int keyIndex, CancellationToken cancellationToken);
     }
 }

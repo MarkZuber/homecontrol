@@ -5,6 +5,6 @@ namespace HomeControl.Web.Services
 {
     public interface IAlexaActivityService
     {
-        Task ExecuteActivityForAlexaMessage(string alexaMessage, CancellationToken cancellationToken);
+        Task ExecuteActivityForAlexaMessageAsync(string alexaMessage, CancellationToken cancellationToken);
     }
 }

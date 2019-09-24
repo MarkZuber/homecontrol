@@ -35,7 +35,7 @@ namespace HomeControl.Web.Services
             return _config.KeyInfos[keyIndex];
         }
 
-        public async Task ExecuteActivityAtIndex(int keyIndex, CancellationToken cancellationToken)
+        public async Task ExecuteActivityAtIndexAsync(int keyIndex, CancellationToken cancellationToken)
         {
             await _activityService
                 .ExecuteActivityAsync(_config.KeyInfos[keyIndex].Key, cancellationToken)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using HomeControl.StreamDeck.Api;
 using HomeControl.StreamDeck.Client;
@@ -11,6 +12,7 @@ namespace HomeControl.StreamDeck
 {
     public static class Program
     {
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         public static async Task Main(string[] args)
         {
             var builder = new HostBuilder()
@@ -37,7 +39,7 @@ namespace HomeControl.StreamDeck
                     logging.AddConsole();
                 });
 
-            await builder.RunConsoleAsync();
+            await builder.RunConsoleAsync().ConfigureAwait(false);
         }
     }
 }

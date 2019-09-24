@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
@@ -14,9 +15,10 @@ namespace HomeControl.Web.Mediatr
         }
 
         /// <inheritdoc />
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         public async Task Handle(AlexaNotification notification, CancellationToken cancellationToken)
         {
-            await _mediator.Send(notification.Request, cancellationToken);
+            await _mediator.Send(notification.Request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

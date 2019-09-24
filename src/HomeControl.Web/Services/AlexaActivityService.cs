@@ -16,7 +16,7 @@ namespace HomeControl.Web.Services
             _config = config;
         }
 
-        public Task ExecuteActivityForAlexaMessage(string alexaMessage, CancellationToken cancellationToken)
+        public Task ExecuteActivityForAlexaMessageAsync(string alexaMessage, CancellationToken cancellationToken)
         {
             if (_config.AlexaToActivityKeys.TryGetValue(alexaMessage, out string activityKey))
             {

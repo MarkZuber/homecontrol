@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using HomeControl.StreamDeck.Client;
@@ -53,6 +54,7 @@ namespace HomeControl.StreamDeck.Api
         /// <exception cref=".ApiException">Thrown when fails to make API call</exception>
         /// <param name="keyIndex"></param>
         /// <returns>Task of ApiResponse (byte[])</returns>
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         Task<ApiResponse<byte[]>> GetImageForKeyAsyncWithHttpInfo(int? keyIndex);
         /// <summary>
         /// </summary>
@@ -66,6 +68,7 @@ namespace HomeControl.StreamDeck.Api
         /// <exception cref=".ApiException">Thrown when fails to make API call</exception>
         /// <param name="keyIndex"></param>
         /// <returns>Task of ApiResponse</returns>
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         Task<ApiResponse<object>> PressKeyAsyncWithHttpInfo(int? keyIndex);
         #endregion Asynchronous Operations
     }
@@ -221,7 +224,7 @@ namespace HomeControl.StreamDeck.Api
         /// <returns>Task of byte[]</returns>
         public async Task<byte[]> GetImageForKeyAsync(int? keyIndex)
         {
-            ApiResponse<byte[]> localVarResponse = await GetImageForKeyAsyncWithHttpInfo(keyIndex);
+            ApiResponse<byte[]> localVarResponse = await GetImageForKeyAsyncWithHttpInfo(keyIndex).ConfigureAwait(false);
             return localVarResponse.Data;
 
         }
@@ -231,6 +234,7 @@ namespace HomeControl.StreamDeck.Api
         /// <exception cref=".ApiException">Thrown when fails to make API call</exception>
         /// <param name="keyIndex"></param>
         /// <returns>Task of ApiResponse (byte[])</returns>
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         public async Task<ApiResponse<byte[]>> GetImageForKeyAsyncWithHttpInfo(int? keyIndex)
         {
             // verify the required parameter 'keyIndex' is set
@@ -273,7 +277,7 @@ namespace HomeControl.StreamDeck.Api
             // make the HTTP request
             var localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
-                localVarPathParams, localVarHttpContentType);
+                localVarPathParams, localVarHttpContentType).ConfigureAwait(false);
 
             int localVarStatusCode = (int)localVarResponse.StatusCode;
 
@@ -369,7 +373,7 @@ namespace HomeControl.StreamDeck.Api
         /// <returns>Task of void</returns>
         public async Task PressKeyAsync(int? keyIndex)
         {
-            await PressKeyAsyncWithHttpInfo(keyIndex);
+            await PressKeyAsyncWithHttpInfo(keyIndex).ConfigureAwait(false);
 
         }
 
@@ -378,6 +382,7 @@ namespace HomeControl.StreamDeck.Api
         /// <exception cref=".ApiException">Thrown when fails to make API call</exception>
         /// <param name="keyIndex"></param>
         /// <returns>Task of ApiResponse</returns>
+        [SuppressMessage("AsyncUsage.CSharp.Naming", "UseAsyncSuffix", Justification = "Override of uncontrolled API.")]
         public async Task<ApiResponse<object>> PressKeyAsyncWithHttpInfo(int? keyIndex)
         {
             // verify the required parameter 'keyIndex' is set
@@ -417,7 +422,7 @@ namespace HomeControl.StreamDeck.Api
             // make the HTTP request
             var localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
-                localVarPathParams, localVarHttpContentType);
+                localVarPathParams, localVarHttpContentType).ConfigureAwait(false);
 
             int localVarStatusCode = (int)localVarResponse.StatusCode;
 
