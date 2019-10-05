@@ -64,15 +64,15 @@ namespace HomeControl.StreamDeck
                         // todo: get "local" operations we can run from server side button config...
                         switch (e.KeyIndex)
                         {
-                        case 11:
-                            _streamDeckController.SetBrightness(5);
-                            break;
-                        case 12:
-                            _streamDeckController.SetBrightness(75);
-                            break;
-                        default:
-                            _streamDeckApi.PressKey(e.KeyIndex);
-                            break;
+                            case 11:
+                                _streamDeckController.SetBrightness(5);
+                                break;
+                            case 12:
+                                _streamDeckController.SetBrightness(75);
+                                break;
+                            default:
+                                _streamDeckApi.PressKey(e.KeyIndex);
+                                break;
                         }
                     }
                     catch (Exception ex)
@@ -103,9 +103,16 @@ namespace HomeControl.StreamDeck
         // todo: move this to the streamdeck hid control library.
         private void UpdateImageFromBytes(int keyIndex, byte[] imageBytes)
         {
-            using (var ms = new MemoryStream(imageBytes))
+            try
             {
-                _streamDeckController.SetImage(keyIndex, ms);
+                using (var ms = new MemoryStream(imageBytes))
+                {
+                    _streamDeckController.SetImage(keyIndex, ms);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"UpdateImageFromBytes ({keyIndex}) failed");
             }
         }
 
