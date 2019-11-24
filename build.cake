@@ -4,7 +4,11 @@ var target = Argument("target", "Default");
 
 public class CoreBuildInformation
 {
-    public CoreBuildInformation(string buildConfiguration, string remoteServerAddress, string dotnetFramework, string architecture)
+    public CoreBuildInformation(
+        string buildConfiguration,
+        string remoteServerAddress,
+        string dotnetFramework,
+        string architecture)
     {
         BuildConfiguration = buildConfiguration;
         RemoteServerAddress = remoteServerAddress;
@@ -52,7 +56,7 @@ public class BuildData
 
         HomeControlWebService = new ServiceData(
             coreBuildInformation,
-            "HomeControl.web",
+            "HomeControl.Web",
             "homecontrolweb");
     }
 
@@ -67,14 +71,28 @@ Setup<BuildData>(setupContext=> {
 
 public void RunWslCommand(string command)
 {
-    StartProcess("wsl.exe", new ProcessSettings
+    string cmd = "wsl.exe";
+    string args = command;
+
+    if (Environment.OSVersion.Platform == PlatformID.Unix)
     {
-        Arguments = command
+        cmd = command.Substring(0, command.IndexOf(' '));
+        args = command.Substring(command.IndexOf(' '));
+    }
+
+    StartProcess(cmd, new ProcessSettings
+    {
+        Arguments = args,
     });
 }
 
 public void RunRemoteCommand(string remoteServerSshAddress, string command)
 {
+    if (Environment.OSVersion.Platform == PlatformID.Unix)
+    {
+        return;
+    }
+
     if (!command.StartsWith("'"))
     {
         command = $"'{command}'";
@@ -94,10 +112,10 @@ public void DeploySystemdService(ServiceData serviceData)
         });
 
     // rsync the bits over to the staging path on the pi
-    RunWslCommand($"rsync -rvzh {serviceData.LinuxArmReleasePath}/* {serviceData.RemoteStagingPath}");
+    RunWslCommand($"rsync -rvzh {serviceData.LinuxArmReleasePath}/ {serviceData.RemoteStagingPath}");
 
     // Ensure user / environment/paths are setup on the pi for the systemd execution
-    RunRemoteCommand(serviceData.CoreBuildInfo.RemoteServerSshAddress, $"'bash -s' < scripts/configure_{serviceData.ServiceName}_systemd.sh");
+    RunRemoteCommand(serviceData.CoreBuildInfo.RemoteServerSshAddress, $"'bash -s' < ./scripts/configure_{serviceData.ServiceName}_systemd.sh");
 }
 
 Task("DeployStreamDeckController")
