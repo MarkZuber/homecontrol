@@ -31,9 +31,12 @@ public class ServiceData
         ServiceName = serviceName;
         CoreBuildInfo = coreBuildInformation;
         LocalPath = $"./src/{projName}";
+        LocalScriptPath = "./scripts";
         CsProjLocalPath = $"{LocalPath}/{projName}.csproj";
         LinuxArmReleasePath = $"{LocalPath}/bin/{coreBuildInformation.BuildConfiguration}/{coreBuildInformation.DotnetFramework}/{coreBuildInformation.Architecture}";
         RemoteStagingPath = $"{CoreBuildInfo.RemoteServerSshAddress}:/home/pi/{ServiceName}_staging";
+        RemoteLocalScriptPath = "/home/pi/scripts_staging";
+        RemoteScriptPath = $"{CoreBuildInfo.RemoteServerSshAddress}:/home/pi/scripts_staging";
     }
 
     public CoreBuildInformation CoreBuildInfo {get;}
@@ -43,6 +46,9 @@ public class ServiceData
     public string CsProjLocalPath { get; }
     public string LinuxArmReleasePath { get; }
     public string RemoteStagingPath { get; }
+    public string LocalScriptPath { get; }
+    public string RemoteLocalScriptPath { get; }
+    public string RemoteScriptPath { get; }
 }
 
 public class BuildData
@@ -69,15 +75,20 @@ Setup<BuildData>(setupContext=> {
     return new BuildData(coreBuildInformation);
 });
 
-public void RunWslCommand(string command)
+public void RunLocalCommand(string command)
 {
-    string cmd = "wsl.exe";
-    string args = command;
+    string cmd;
+    string args;
 
     if (Environment.OSVersion.Platform == PlatformID.Unix)
     {
         cmd = command.Substring(0, command.IndexOf(' '));
         args = command.Substring(command.IndexOf(' '));
+    } 
+    else 
+    {
+        cmd = "wsl.exe";
+        args = command;
     }
 
     StartProcess(cmd, new ProcessSettings
@@ -86,18 +97,16 @@ public void RunWslCommand(string command)
     });
 }
 
-public void RunRemoteCommand(string remoteServerSshAddress, string command)
+public void RunServiceStartScript(ServiceData serviceData)
 {
-    if (Environment.OSVersion.Platform == PlatformID.Unix)
-    {
-        return;
-    }
+    RunRsync(serviceData.LocalScriptPath, serviceData.RemoteScriptPath);
+    string scriptCommand = $"{serviceData.RemoteLocalScriptPath}/configure_{serviceData.ServiceName}_systemd.sh";
+    RunLocalCommand($"ssh -t {serviceData.CoreBuildInfo.RemoteServerSshAddress} {scriptCommand}");
+}
 
-    if (!command.StartsWith("'"))
-    {
-        command = $"'{command}'";
-    }
-    RunWslCommand($"ssh {remoteServerSshAddress} {command}");
+public void RunRsync(string sourcePath, string targetPath)
+{
+    RunLocalCommand($"rsync -rvzh {sourcePath}/ {targetPath}");
 }
 
 public void DeploySystemdService(ServiceData serviceData)
@@ -111,11 +120,8 @@ public void DeploySystemdService(ServiceData serviceData)
             Runtime = serviceData.CoreBuildInfo.Architecture
         });
 
-    // rsync the bits over to the staging path on the pi
-    RunWslCommand($"rsync -rvzh {serviceData.LinuxArmReleasePath}/ {serviceData.RemoteStagingPath}");
-
-    // Ensure user / environment/paths are setup on the pi for the systemd execution
-    RunRemoteCommand(serviceData.CoreBuildInfo.RemoteServerSshAddress, $"'bash -s' < ./scripts/configure_{serviceData.ServiceName}_systemd.sh");
+    RunRsync(serviceData.LinuxArmReleasePath, serviceData.RemoteStagingPath);
+    RunServiceStartScript(serviceData);
 }
 
 Task("DeployStreamDeckController")
