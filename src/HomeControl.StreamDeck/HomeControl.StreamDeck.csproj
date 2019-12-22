@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="RestSharp" Version="106.6.9" />
-    <PackageReference Include="Zube.StreamDeck" Version="1.0.0.6" />
+    <PackageReference Include="Zube.StreamDeck" Version="1.0.0.8" />
   </ItemGroup>
 
   <ItemGroup>
