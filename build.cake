@@ -71,7 +71,7 @@ public class BuildData
 }
 
 Setup<BuildData>(setupContext=> {
-    var coreBuildInformation = new CoreBuildInformation("Release", "192.168.2.203", "netcoreapp3.0", "linux-arm");
+    var coreBuildInformation = new CoreBuildInformation("Release", "192.168.2.203", "netcoreapp3.1", "linux-arm");
     return new BuildData(coreBuildInformation);
 });
 
@@ -84,8 +84,8 @@ public void RunLocalCommand(string command)
     {
         cmd = command.Substring(0, command.IndexOf(' '));
         args = command.Substring(command.IndexOf(' '));
-    } 
-    else 
+    }
+    else
     {
         cmd = "wsl.exe";
         args = command;
