@@ -1,6 +1,9 @@
-#tool nuget:?package=Cake.Bakery&Version=0.4.1
+///////////////////////////////////////////////////////////////////////////////
+// ARGUMENTS
+///////////////////////////////////////////////////////////////////////////////
 
 var target = Argument("target", "Default");
+var configuration = Argument("configuration", "Release");
 
 public class CoreBuildInformation
 {
@@ -22,7 +25,6 @@ public class CoreBuildInformation
     public string DotnetFramework {get;}
     public string Architecture {get;}
 }
-
 
 public class ServiceData
 {
@@ -117,7 +119,7 @@ public void DeploySystemdService(ServiceData serviceData)
         new DotNetCorePublishSettings
         {
             Configuration = serviceData.CoreBuildInfo.BuildConfiguration,
-            Runtime = serviceData.CoreBuildInfo.Architecture
+            Runtime = serviceData.CoreBuildInfo.Architecture,
         });
 
     RunRsync(serviceData.LinuxArmReleasePath, serviceData.RemoteStagingPath);

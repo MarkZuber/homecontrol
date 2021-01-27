@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using HomeControl.Web.Devices.Transports;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace HomeControl.Web.Devices.Sony
 {

@@ -17,7 +17,7 @@ using System.Web;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 using RestSharp;
 
 namespace HomeControl.StreamDeck.Client
@@ -27,9 +27,10 @@ namespace HomeControl.StreamDeck.Client
     /// </summary>
     public partial class ApiClient
     {
-        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        private readonly JsonSerializerOptions _serializerSettings = new JsonSerializerOptions
         {
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+
+            // ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         };
 
         /// <summary>
@@ -212,7 +213,7 @@ namespace HomeControl.StreamDeck.Client
                 path, method, queryParams, postBody, headerParams, formParams, fileParams,
                 pathParams, contentType);
             InterceptRequest(request);
-            var response = await RestClient.ExecuteTaskAsync(request);
+            var response = await RestClient.ExecuteAsync(request);
             InterceptResponse(request, response);
             return (Object)response;
         }
@@ -298,7 +299,7 @@ namespace HomeControl.StreamDeck.Client
         /// <returns>Object representation of the JSON string.</returns>
         public object Deserialize(IRestResponse response, Type type)
         {
-            IList<Parameter> headers = response.Headers;
+            var headers = response.Headers;
             if (type == typeof(byte[])) // return byte array
             {
                 return response.RawBytes;
@@ -341,7 +342,7 @@ namespace HomeControl.StreamDeck.Client
             // at this point, it must be a model (json)
             try
             {
-                return JsonConvert.DeserializeObject(response.Content, type, _serializerSettings);
+                return JsonSerializer.Deserialize(response.Content, type, _serializerSettings);
             }
             catch (Exception e)
             {
@@ -358,7 +359,7 @@ namespace HomeControl.StreamDeck.Client
         {
             try
             {
-                return obj != null ? JsonConvert.SerializeObject(obj) : null;
+                return obj != null ? JsonSerializer.Serialize(obj) : null;
             }
             catch (Exception e)
             {
