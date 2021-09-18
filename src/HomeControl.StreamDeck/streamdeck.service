@@ -1,6 +1,8 @@
 ﻿[Unit]
 Description=StreamDeck HomeControl Controller
 DefaultDependencies=no
+Wants=homecontrolweb.service
+After=network.target homecontrolweb.service
 
 [Service]
 Type=simple

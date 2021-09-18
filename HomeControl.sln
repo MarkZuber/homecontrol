@@ -12,6 +12,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeControl.StreamDeck", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Web", "src\HomeControl.Web\HomeControl.Web.csproj", "{09F4189C-D7D3-42CF-8DD9-2FAB1DC569D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B00C467F-40FE-47BA-B049-271B1EA9514F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zube.StreamDeck", "src\StreamDeck\Zube.StreamDeck.csproj", "{2F91D665-10B0-4446-8153-6A798F4865AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,11 +50,26 @@ Global
 		{09F4189C-D7D3-42CF-8DD9-2FAB1DC569D4}.Release|x64.Build.0 = Release|Any CPU
 		{09F4189C-D7D3-42CF-8DD9-2FAB1DC569D4}.Release|x86.ActiveCfg = Release|Any CPU
 		{09F4189C-D7D3-42CF-8DD9-2FAB1DC569D4}.Release|x86.Build.0 = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|x64.Build.0 = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F91D665-10B0-4446-8153-6A798F4865AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {76B53920-53E2-4388-9387-AAABB14ACCB2}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F91D665-10B0-4446-8153-6A798F4865AA} = {B00C467F-40FE-47BA-B049-271B1EA9514F}
 	EndGlobalSection
 EndGlobal

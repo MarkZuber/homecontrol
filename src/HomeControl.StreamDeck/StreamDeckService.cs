@@ -64,15 +64,15 @@ namespace HomeControl.StreamDeck
                         // todo: get "local" operations we can run from server side button config...
                         switch (e.KeyIndex)
                         {
-                            case 11:
-                                _streamDeckController.SetBrightness(5);
-                                break;
-                            case 12:
-                                _streamDeckController.SetBrightness(75);
-                                break;
-                            default:
-                                _streamDeckApi.PressKey(e.KeyIndex);
-                                break;
+                        case 11:
+                            _streamDeckController.SetBrightness(5);
+                            break;
+                        case 12:
+                            _streamDeckController.SetBrightness(75);
+                            break;
+                        default:
+                            _streamDeckApi.PressKey(e.KeyIndex);
+                            break;
                         }
                     }
                     catch (Exception ex)
@@ -118,19 +118,36 @@ namespace HomeControl.StreamDeck
 
         private async Task UpdateImageForKeyAsync(int keyIndex)
         {
-            try
-            {
-                var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex).ConfigureAwait(false);
-                _keyImageCache[keyIndex] = imageBytes;
-                UpdateImageFromBytes(keyIndex, imageBytes);
+            // On Cold Boot, web service might not be up yet, so let's retry a few times
+            // to make sure everything is ready for us to call the web site.
+            const int maxRetries = 3;
+            var attempt = 0;
 
-                // Also update the keypressed image...
-                imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys).ConfigureAwait(false);
-                _keyImageCache[keyIndex + _streamDeckController.NumKeys] = imageBytes;
-            }
-            catch (Exception ex)
+            while (attempt < maxRetries)
             {
-                _logger.LogError(ex, $"SetImage ({keyIndex}) failed");
+                attempt++;
+                try
+                {
+                    var imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex).ConfigureAwait(false);
+                    _keyImageCache[keyIndex] = imageBytes;
+                    UpdateImageFromBytes(keyIndex, imageBytes);
+
+                    // Also update the keypressed image...
+                    imageBytes = await _streamDeckApi.GetImageForKeyAsync(keyIndex + _streamDeckController.NumKeys).ConfigureAwait(false);
+                    _keyImageCache[keyIndex + _streamDeckController.NumKeys] = imageBytes;
+                }
+                catch (Exception ex)
+                {
+                    if (attempt < maxRetries)
+                    {
+                        _logger.LogInformation($"SetImage ({keyIndex}) failed on attempt {attempt}.  Retrying.");
+                        await Task.Delay(2000).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        _logger.LogError(ex, $"SetImage ({keyIndex}) failed");
+                    }
+                }
             }
         }
 
