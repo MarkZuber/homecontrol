@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Company>Zube, inc.</Company>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/markzuber/streamdeckdotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/markzuber/streamdeckdotnet</RepositoryUrl>
+    <Copyright>(c) Mark Zuber</Copyright>
+    <Description>Elgato StreamDeck controller for .NET</Description>
+    <PackageTags>dotnet elgato streamdeck</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0006" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
