@@ -73,7 +73,7 @@ public class BuildData
 }
 
 Setup<BuildData>(setupContext=> {
-    var coreBuildInformation = new CoreBuildInformation("Release", "192.168.2.203", "netcoreapp3.1", "linux-arm");
+    var coreBuildInformation = new CoreBuildInformation("Release", "192.168.2.203", "net5.0", "linux-arm");
     return new BuildData(coreBuildInformation);
 });
 
@@ -108,7 +108,7 @@ public void RunServiceStartScript(ServiceData serviceData)
 
 public void RunRsync(string sourcePath, string targetPath)
 {
-    RunLocalCommand($"rsync -rvzh {sourcePath}/ {targetPath}");
+    RunLocalCommand($"rsync -rvzh --delete {sourcePath}/ {targetPath}");
 }
 
 public void DeploySystemdService(ServiceData serviceData)

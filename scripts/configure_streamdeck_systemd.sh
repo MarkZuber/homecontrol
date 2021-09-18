@@ -23,6 +23,8 @@ sudo systemctl stop streamdeck.service
 sudo cp /home/pi/streamdeck_staging/streamdeck.service /etc/systemd/system/streamdeck.service
 sudo cp -R /home/pi/streamdeck_staging/* /var/streamdecksvc
 sudo chown -R streamdeckuser:streamdeckuser /var/streamdecksvc
+sudo systemctl daemon-reload
 
+sudo systemctl enable streamdeck.service
 sudo systemctl start streamdeck.service
 sudo systemctl status streamdeck.service

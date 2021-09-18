@@ -16,5 +16,8 @@ sudo cp /home/pi/homecontrolweb_staging/homecontrolweb.service /etc/systemd/syst
 sudo cp -R /home/pi/homecontrolweb_staging/* /var/homecontrolwebsvc
 sudo chown -R homecontroluser:homecontroluser /var/homecontrolwebsvc
 
+sudo systemctl daemon-reload
+
+sudo systemctl enable homecontrolweb.service
 sudo systemctl start homecontrolweb.service
 sudo systemctl status homecontrolweb.service

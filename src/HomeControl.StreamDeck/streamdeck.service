@@ -4,11 +4,14 @@ DefaultDependencies=no
 
 [Service]
 Type=simple
-RemainAfterExit=no
+Restart=always
+
+# Restart service after 10 seconds if dotnet service crashes
+RestartSec=10   
 ExecStart=/var/streamdecksvc/HomeControl.StreamDeck
 WorkingDirectory=/var/streamdecksvc
 User=streamdeckuser
 Group=streamdeckuser
 
-
 [Install]
+WantedBy = multi-user.target
