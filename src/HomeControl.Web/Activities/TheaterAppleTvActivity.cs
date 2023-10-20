@@ -21,7 +21,7 @@ namespace HomeControl.Web.Activities
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theater.Projector.TurnOnAsync().ConfigureAwait(false);
+            await _theater.EpsonProjector.TurnOnAsync().ConfigureAwait(false);
             await _theater.Receiver.TurnOnAsync().ConfigureAwait(false);
             await _theater.Receiver.SelectAppleTvInputAsync().ConfigureAwait(false);
         }

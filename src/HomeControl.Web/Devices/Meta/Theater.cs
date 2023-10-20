@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace HomeControl.Web.Devices.Meta;
 
-namespace HomeControl.Web.Devices.Meta
+public class Theater : ITheater
 {
-    public class Theater : ITheater
+    public Theater(IDenonNetworkReceiver receiver, ISonyNetworkProjector projector, IEpsonNetworkProjector epsonProjector)
     {
-        public Theater(IDenonNetworkReceiver receiver, ISonyNetworkProjector projector)
-        {
-            Receiver = receiver;
-            Projector = projector;
-        }
-
-        public IDenonNetworkReceiver Receiver { get; }
-
-        public ISonyNetworkProjector Projector { get; }
+        Receiver = receiver;
+        Projector = projector;
+        EpsonProjector = epsonProjector;
     }
+
+    public IDenonNetworkReceiver Receiver { get; }
+
+    public ISonyNetworkProjector Projector { get; }
+
+    public IEpsonNetworkProjector EpsonProjector { get; }
 }

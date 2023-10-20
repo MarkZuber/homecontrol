@@ -9,5 +9,6 @@ namespace HomeControl.Web.Devices
     {
         IDenonNetworkReceiver Receiver { get; }
         ISonyNetworkProjector Projector { get; }
+        IEpsonNetworkProjector EpsonProjector {get;}
     }
 }

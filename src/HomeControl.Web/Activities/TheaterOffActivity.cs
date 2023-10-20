@@ -21,7 +21,7 @@ namespace HomeControl.Web.Activities
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theater.Projector.TurnOffAsync().ConfigureAwait(false);
+            await _theater.EpsonProjector.TurnOffAsync().ConfigureAwait(false);
             await _theater.Receiver.TurnOffAsync().ConfigureAwait(false);
         }
     }

@@ -6,6 +6,7 @@ using System.Reflection;
 using HomeControl.Web.Activities;
 using HomeControl.Web.Devices;
 using HomeControl.Web.Devices.Denon;
+using HomeControl.Web.Devices.Epson;
 using HomeControl.Web.Devices.Meta;
 using HomeControl.Web.Devices.Sony;
 using HomeControl.Web.Services;
@@ -71,9 +72,10 @@ namespace HomeControl.Web
             // Register Devices
 
             // todo: wire this up to json config...
-            services.AddSingleton<IDenonHttpReceiverDevice>(new DenonHttpReceiverDevice("192.168.2.198"));
+            services.AddSingleton<IDenonHttpReceiverDevice>(new DenonHttpReceiverDevice(DeviceAddresses.DenonReceiver));
             services.AddSingleton<IDenonNetworkReceiver, DenonNetworkReceiver>();
-            services.AddSingleton<ISonyNetworkProjector>(new SonyNetworkProjector("192.168.2.22"));
+            // services.AddSingleton<ISonyNetworkProjector>(new SonyNetworkProjector("192.168.2.22"));
+            services.AddSingleton<IEpsonNetworkProjector>(new EpsonNetworkProjector(DeviceAddresses.EpsonProjector));
 
             services.AddSingleton<ITheater, Theater>();
 
