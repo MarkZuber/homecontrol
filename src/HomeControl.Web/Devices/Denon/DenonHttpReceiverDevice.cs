@@ -6,14 +6,15 @@
 
 using System;
 using System.Net.Http;
+using HomeControl.Web.Services;
 
 namespace HomeControl.Web.Devices.Denon
 {
     public class DenonHttpReceiverDevice : IDenonHttpReceiverDevice
     {
-        public DenonHttpReceiverDevice(string deviceHostAddress)
+        public DenonHttpReceiverDevice(INetworkSettings networkSettings)
         {
-            DeviceHostAddr = deviceHostAddress;
+            DeviceHostAddr = networkSettings.DenonReceiverAddress;
         }
 
         public string DeviceHostAddr { get; }

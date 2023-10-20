@@ -8,7 +8,6 @@ namespace HomeControl.Web.Devices
     public interface ITheater
     {
         IDenonNetworkReceiver Receiver { get; }
-        ISonyNetworkProjector Projector { get; }
-        IEpsonNetworkProjector EpsonProjector {get;}
+        IEpsonNetworkProjector EpsonProjector { get; }
     }
 }

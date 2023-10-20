@@ -1,13 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace HomeControl.Web
 {
@@ -15,6 +8,7 @@ namespace HomeControl.Web
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("HomeControl.Web MAIN ENTRY");
             CreateHostBuilder(args).Build().Run();
         }
 

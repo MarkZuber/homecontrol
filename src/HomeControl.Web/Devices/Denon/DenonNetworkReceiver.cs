@@ -26,7 +26,7 @@ namespace HomeControl.Web.Devices.Denon
             return Task.CompletedTask;
         }
 
-        public Task SelectPs4InputAsync()
+        public Task SelectPlaystationInputAsync()
         {
             _receiver.MainZoneInput = _receiver.AvailableInputs.Dvd;
             return Task.CompletedTask;

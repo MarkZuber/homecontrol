@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HomeControl.StreamDeck.Client;
 using RestSharp;
+using Serilog;
 
 namespace HomeControl.StreamDeck.Api
 {
@@ -78,14 +79,16 @@ namespace HomeControl.StreamDeck.Api
     /// </summary>
     public partial class StreamDeckApi : IStreamDeckApi
     {
+        private readonly ILogger _logger;
         private ExceptionFactory _exceptionFactory = (name, response) => null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StreamDeckApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public StreamDeckApi(String basePath)
+        public StreamDeckApi(ILogger logger, String basePath)
         {
+            _logger = logger;
             Configuration = new Configuration { BasePath = basePath };
 
             ExceptionFactory = Configuration.DefaultExceptionFactory;
@@ -160,9 +163,11 @@ namespace HomeControl.StreamDeck.Api
         /// <returns>ApiResponse of byte[]</returns>
         public ApiResponse<byte[]> GetImageForKeyWithHttpInfo(int? keyIndex)
         {
+            _logger.Information($"GetImageForKeyWithHttpInfo {keyIndex}");
             // verify the required parameter 'keyIndex' is set
             if (keyIndex == null)
             {
+                _logger.Error($"GetImageForKeyWithHttpInfo Missing required parameter keyIndex");
                 throw new ApiException(400, "Missing required parameter 'keyIndex' when calling StreamDeckApi->GetImageForKey");
             }
 
@@ -196,21 +201,27 @@ namespace HomeControl.StreamDeck.Api
                 localVarPathParams.Add("keyIndex", Configuration.ApiClient.ParameterToString(keyIndex)); // path parameter
             }
 
+            _logger.Information($"GetImageForKeyWithHttpInfo Making API request");
+
             // make the HTTP request
             var localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
             int localVarStatusCode = (int)localVarResponse.StatusCode;
+            _logger.Information($"GetImageForKeyWithHttpInfo StatusCode: {localVarStatusCode}");
 
             if (ExceptionFactory != null)
             {
                 Exception exception = ExceptionFactory("GetImageForKey", localVarResponse);
                 if (exception != null)
                 {
+                    _logger.Information($"GetImageForKeyWithHttpInfo exception: {exception.Message}");
                     throw exception;
                 }
             }
+
+            _logger.Information($"GetImageForKeyWithHttpInfo returning API Response");
 
             return new ApiResponse<byte[]>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
@@ -302,6 +313,8 @@ namespace HomeControl.StreamDeck.Api
         /// <returns></returns>
         public void PressKey(int? keyIndex)
         {
+            _logger.Information($"PressKey {keyIndex}");
+
             PressKeyWithHttpInfo(keyIndex);
         }
 
@@ -312,9 +325,12 @@ namespace HomeControl.StreamDeck.Api
         /// <returns>ApiResponse of Object(void)</returns>
         public ApiResponse<Object> PressKeyWithHttpInfo(int? keyIndex)
         {
+            _logger.Information($"PressKeyWithHttpInfo {keyIndex}");
+
             // verify the required parameter 'keyIndex' is set
             if (keyIndex == null)
             {
+                _logger.Error($"PressKeyWithHttpInfo Missing keyindex parameter");
                 throw new ApiException(400, "Missing required parameter 'keyIndex' when calling StreamDeckApi->PressKey");
             }
 
@@ -346,20 +362,26 @@ namespace HomeControl.StreamDeck.Api
             }
 
             // make the HTTP request
+            _logger.Information($"PressKeyWithHttpInfo Making HTTP request");
+
             var localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
             int localVarStatusCode = (int)localVarResponse.StatusCode;
+            _logger.Information($"PressKeyWithHttpInfo status code: {localVarStatusCode}");
 
             if (ExceptionFactory != null)
             {
                 Exception exception = ExceptionFactory("PressKey", localVarResponse);
                 if (exception != null)
                 {
+                    _logger.Information($"PressKeyWithHttpInfo exception: {exception.Message}");
                     throw exception;
                 }
             }
+
+            _logger.Information($"PressKeyWithHttpInfo returning api response");
 
             return new ApiResponse<Object>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),

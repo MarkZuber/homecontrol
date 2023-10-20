@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using HomeControl.StreamDeck.Api;
 using HomeControl.StreamDeck.Common;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Zube.StreamDeck;
+using Serilog;
 
 namespace HomeControl.StreamDeck
 {
@@ -18,15 +18,16 @@ namespace HomeControl.StreamDeck
         private readonly IOptions<StreamDeckConfig> _config;
         private readonly IStreamDeckController _streamDeckController;
         private readonly IStreamDeckApi _streamDeckApi;
-        private readonly ConcurrentDictionary<int, byte[]> _keyImageCache = new ConcurrentDictionary<int, byte[]>();
-        private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+        private readonly ConcurrentDictionary<int, byte[]> _keyImageCache = new();
+        private readonly SemaphoreSlim _semaphoreSlim = new(1);
 
         public StreamDeckService(
-            ILogger<StreamDeckService> logger,
+            ILogger logger,
             IOptions<StreamDeckConfig> config,
             IStreamDeckApi streamDeckApi)
         {
             _logger = logger;
+            _logger.Information("StreamDeck Service Starting Up");
             _config = config;
             _streamDeckApi = streamDeckApi;
             _streamDeckController = StreamDeckFactory.CreateDeck();
@@ -49,6 +50,8 @@ namespace HomeControl.StreamDeck
 
         private void OnStreamDeckKeyPressed(object sender, StreamDeckKeyChangedEventArgs e)
         {
+            _logger.Information("StreamDeck Service OnStreamDeckKeyPressed");
+
             bool locked = _semaphoreSlim.Wait(500);
             try
             {
@@ -56,7 +59,7 @@ namespace HomeControl.StreamDeck
                 // so we can toggle the button on push instead of just going blank.
                 if (e.KeyOn)
                 {
-                    _logger.LogInformation($"StreamDeck Key pressed: {e.KeyIndex}");
+                    _logger.Information($"StreamDeck Key pressed: {e.KeyIndex}");
 
                     try
                     {
@@ -77,7 +80,7 @@ namespace HomeControl.StreamDeck
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"StreamDeck Key Press failed");
+                        _logger.Error(ex, $"StreamDeck Key Press failed");
                     }
                 }
 
@@ -94,7 +97,7 @@ namespace HomeControl.StreamDeck
 
         public void Dispose()
         {
-            _logger.LogInformation("Disposing....");
+            _logger.Information("Disposing....");
             _streamDeckController.ClearAllKeys();
             _streamDeckController.KeyPressed -= OnStreamDeckKeyPressed;
             _streamDeckController.Dispose();
@@ -112,7 +115,7 @@ namespace HomeControl.StreamDeck
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"UpdateImageFromBytes ({keyIndex}) failed");
+                _logger.Error(ex, $"UpdateImageFromBytes ({keyIndex}) failed");
             }
         }
 
@@ -140,12 +143,12 @@ namespace HomeControl.StreamDeck
                 {
                     if (attempt < maxRetries)
                     {
-                        _logger.LogInformation($"SetImage ({keyIndex}) failed on attempt {attempt}.  Retrying.");
+                        _logger.Information($"SetImage ({keyIndex}) failed on attempt {attempt}.  Retrying.");
                         await Task.Delay(2000).ConfigureAwait(false);
                     }
                     else
                     {
-                        _logger.LogError(ex, $"SetImage ({keyIndex}) failed");
+                        _logger.Error(ex, $"SetImage ({keyIndex}) failed");
                     }
                 }
             }

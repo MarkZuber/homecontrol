@@ -13,7 +13,7 @@ namespace HomeControl.Web.Devices
         Task VolumeDownAsync();
         Task ToggleMuteAsync();
         Task SelectXboxInputAsync();
-        Task SelectPs4InputAsync();
+        Task SelectPlaystationInputAsync();
         Task SelectAppleTvInputAsync();
         Task SelectFireTvInputAsync();
     }

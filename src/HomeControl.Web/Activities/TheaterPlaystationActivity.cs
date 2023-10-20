@@ -9,12 +9,12 @@ using Serilog;
 
 namespace HomeControl.Web.Activities
 {
-    public class TheaterAppleTvActivity : IActivity
+    public class TheaterPlaystationActivity : IActivity
     {
         private readonly ILogger _logger;
         private readonly ITheater _theater;
 
-        public TheaterAppleTvActivity(ILogger logger, ITheater theater)
+        public TheaterPlaystationActivity(ILogger logger, ITheater theater)
         {
             _logger = logger;
             _theater = theater;
@@ -24,7 +24,8 @@ namespace HomeControl.Web.Activities
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.Information("AppleTV Activity");
+            _logger.Information("Playstation Activity");
+
             try
             {
                 await _theater.EpsonProjector.TurnOnAsync().ConfigureAwait(false);
@@ -45,7 +46,7 @@ namespace HomeControl.Web.Activities
 
             try
             {
-                await _theater.Receiver.SelectAppleTvInputAsync().ConfigureAwait(false);
+                await _theater.Receiver.SelectPlaystationInputAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {

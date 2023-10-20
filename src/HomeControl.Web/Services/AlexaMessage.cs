@@ -3,7 +3,7 @@
     public static class AlexaMessage
     {
         public const string TheaterXboxOn = "theater+xbox+on";
-        public const string TheaterPs4On = "theater+ps4+on";
+        public const string TheaterPlaystationOn = "theater+playstation+on";
         public const string TheaterFireTvOn = "theater+firetv+on";
         public const string TheaterAppleTvOn = "theater+appletv+on";
         public const string TheaterVolumeMute = "theater+volume+mute";

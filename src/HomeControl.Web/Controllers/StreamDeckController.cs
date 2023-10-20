@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HomeControl.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace HomeControl.Web.Controllers
 {
@@ -14,11 +15,13 @@ namespace HomeControl.Web.Controllers
     [ApiController]
     public class StreamDeckController : Controller
     {
+        private readonly ILogger _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IStreamDeckActivityService _activityService;
 
-        public StreamDeckController(IWebHostEnvironment webHostEnvironment, IStreamDeckActivityService activityService)
+        public StreamDeckController(ILogger logger, IWebHostEnvironment webHostEnvironment, IStreamDeckActivityService activityService)
         {
+            _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _activityService = activityService;
         }
@@ -43,6 +46,7 @@ namespace HomeControl.Web.Controllers
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult PressKey(int keyIndex)
         {
+            _logger.Information($"StreamdeckController PressKey {keyIndex}");
             // todo: make PressKey an async method.
             _activityService
                 .ExecuteActivityAtIndexAsync(keyIndex, CancellationToken.None)

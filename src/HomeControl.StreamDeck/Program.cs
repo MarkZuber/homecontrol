@@ -6,7 +6,6 @@ using HomeControl.StreamDeck.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace HomeControl.StreamDeck
 {
@@ -27,16 +26,16 @@ namespace HomeControl.StreamDeck
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    string logFilePrefix = "homecontrol.streamdeck";
+                    string logsDir = "/tmp";
+                    var logger = LoggerFactory.CreateLogger(logsDir, logFilePrefix);
+                    services.AddSingleton(logger);
+
                     services.AddOptions();
                     services.Configure<StreamDeckConfig>(hostContext.Configuration.GetSection("StreamDeck"));
 
                     services.AddSingleton<IHostedService, StreamDeckService>();
-                    services.AddSingleton<IStreamDeckApi>(new StreamDeckApi("http://192.168.2.203:8080"));
-                })
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
+                    services.AddSingleton<IStreamDeckApi>(new StreamDeckApi(logger, "http://192.168.2.203:8080"));
                 });
 
             await builder.RunConsoleAsync().ConfigureAwait(false);

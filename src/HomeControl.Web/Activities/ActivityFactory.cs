@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HomeControl.Web.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +14,7 @@ namespace HomeControl.Web.Activities
             { ActivityKey.TheaterOff, typeof(TheaterOffActivity) },
             { ActivityKey.TheaterOn, typeof(TheaterOnActivity) },
             { ActivityKey.TheaterXboxOn, typeof(TheaterXboxActivity) },
-            { ActivityKey.TheaterPs4On, typeof(TheaterPs4Activity) },
+            { ActivityKey.TheaterPlaystationOn, typeof(TheaterPlaystationActivity) },
             { ActivityKey.TheaterFireTvOn, typeof(TheaterFireTvActivity) },
             { ActivityKey.TheaterAppleTvOn, typeof(TheaterAppleTvActivity) },
             { ActivityKey.TheaterVolumeUp, typeof(TheaterVolumeUpActivity) },

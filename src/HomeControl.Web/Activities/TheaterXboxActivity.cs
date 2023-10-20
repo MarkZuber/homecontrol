@@ -5,15 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using HomeControl.Web.Devices;
 using HomeControl.Web.Services;
+using Serilog;
 
 namespace HomeControl.Web.Activities
 {
     public class TheaterXboxActivity : IActivity
     {
+        private readonly ILogger _logger;
         private readonly ITheater _theater;
 
-        public TheaterXboxActivity(ITheater theater)
+        public TheaterXboxActivity(ILogger logger, ITheater theater)
         {
+            _logger = logger;
             _theater = theater;
         }
 
@@ -21,9 +24,34 @@ namespace HomeControl.Web.Activities
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _theater.EpsonProjector.TurnOnAsync().ConfigureAwait(false);
-            await _theater.Receiver.TurnOnAsync().ConfigureAwait(false);
-            await _theater.Receiver.SelectXboxInputAsync().ConfigureAwait(false);
+            _logger.Information("Xbox Activity");
+
+            try
+            {
+                await _theater.EpsonProjector.TurnOnAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"XboxActivity Failure to turn on Projector: {ex.Message}");
+            }
+
+            try
+            {
+                await _theater.Receiver.TurnOnAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"XboxActivity Failure to turn on Receiver: {ex.Message}");
+            }
+
+            try
+            {
+                await _theater.Receiver.SelectXboxInputAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"XboxActivity Failure to set input on Receiver: {ex.Message}");
+            }
         }
     }
 }

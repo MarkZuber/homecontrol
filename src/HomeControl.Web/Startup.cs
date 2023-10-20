@@ -8,7 +8,6 @@ using HomeControl.Web.Devices;
 using HomeControl.Web.Devices.Denon;
 using HomeControl.Web.Devices.Epson;
 using HomeControl.Web.Devices.Meta;
-using HomeControl.Web.Devices.Sony;
 using HomeControl.Web.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -69,13 +68,20 @@ namespace HomeControl.Web
             });
             #endregion SWAGGER
 
+            // Logging
+            string logFilePrefix = "homecontrolweb";
+            string logsDir = "/tmp";
+            var logger = LoggerFactory.CreateLogger(logsDir, logFilePrefix);
+            services.AddSingleton(logger);
+
+            logger.Information("HomeControl.Web starting up");
+
             // Register Devices
 
-            // todo: wire this up to json config...
-            services.AddSingleton<IDenonHttpReceiverDevice>(new DenonHttpReceiverDevice(DeviceAddresses.DenonReceiver));
+            services.AddSingleton<INetworkSettings, NetworkSettings>();
+            services.AddSingleton<IDenonHttpReceiverDevice, DenonHttpReceiverDevice>();
             services.AddSingleton<IDenonNetworkReceiver, DenonNetworkReceiver>();
-            // services.AddSingleton<ISonyNetworkProjector>(new SonyNetworkProjector("192.168.2.22"));
-            services.AddSingleton<IEpsonNetworkProjector>(new EpsonNetworkProjector(DeviceAddresses.EpsonProjector));
+            services.AddSingleton<IEpsonNetworkProjector, EpsonNetworkProjector>();
 
             services.AddSingleton<ITheater, Theater>();
 
@@ -84,7 +90,7 @@ namespace HomeControl.Web
             services.AddSingleton<TheaterOnActivity>();
             services.AddSingleton<TheaterAppleTvActivity>();
             services.AddSingleton<TheaterFireTvActivity>();
-            services.AddSingleton<TheaterPs4Activity>();
+            services.AddSingleton<TheaterPlaystationActivity>();
             services.AddSingleton<TheaterToggleMuteActivity>();
             services.AddSingleton<TheaterVolumeDownActivity>();
             services.AddSingleton<TheaterVolumeUpActivity>();
@@ -97,7 +103,7 @@ namespace HomeControl.Web
                 new ConcurrentDictionary<int, StreamDeckKeyInfo>(new Dictionary<int, StreamDeckKeyInfo>
                 {
                     {  0, new StreamDeckKeyInfo(ActivityKey.TheaterXboxOn,  "xbox.png", "xbox.png") },
-                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterPs4On, "ps4.png", "ps4.png") },
+                    {  1, new StreamDeckKeyInfo(ActivityKey.TheaterPlaystationOn, "ps4.png", "ps4.png") },
                     {  2, new StreamDeckKeyInfo(ActivityKey.TheaterFireTvOn,  "firetv.png", "firetv.png") },
                     {  3, new StreamDeckKeyInfo(ActivityKey.TheaterAppleTvOn,  "appletv.png", "appletv.png") },
                     {  4, new StreamDeckKeyInfo(ActivityKey.TheaterVolumeToggleMute, "volmute.png", "volmute.png") },
@@ -120,7 +126,7 @@ namespace HomeControl.Web
                 new ConcurrentDictionary<string, string>(new Dictionary<string, string>
                 {
                     { AlexaMessage.TheaterXboxOn, ActivityKey.TheaterXboxOn },
-                    { AlexaMessage.TheaterPs4On, ActivityKey.TheaterPs4On },
+                    { AlexaMessage.TheaterPlaystationOn, ActivityKey.TheaterPlaystationOn },
                     { AlexaMessage.TheaterFireTvOn, ActivityKey.TheaterFireTvOn },
                     { AlexaMessage.TheaterAppleTvOn, ActivityKey.TheaterAppleTvOn },
                     { AlexaMessage.TheaterVolumeMute, ActivityKey.TheaterVolumeToggleMute },
