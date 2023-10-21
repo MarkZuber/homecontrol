@@ -12,7 +12,7 @@ Restart=always
 RestartSec=10   
 
 SyslogIdentifier=homecontrolwebsvc
-ExecStart=/var/homecontrolwebsvc/HomeControl.web
+ExecStart=/var/homecontrolwebsvc/HomeControl.Web
 WorkingDirectory=/var/homecontrolwebsvc
 User=homecontroluser
 Group=homecontroluser
